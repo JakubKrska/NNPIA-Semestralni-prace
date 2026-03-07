@@ -11,3 +11,5 @@ Klíčové vlastnosti:
  Zabezpečený přístup: Každý uživatel spravuje pouze svá data.
 
  Entity: Owner (User), Pet (jméno, druh, věk), MedicalRecord (typ záznamu, datum, poznámka, příloha).
+
+ Funkce: "AI Pet Consultant" – Uživatel popíše symptomy nebo chování mazlíčka a aplikace na základě historie zvířete a jazykového modelu poskytne doporučení
