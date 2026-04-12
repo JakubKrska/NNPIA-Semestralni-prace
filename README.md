@@ -44,7 +44,7 @@ Představuje digitální deník zdraví.
  attachment_url: Cesta k uloženým souborům (např. naskenovaná lékařská zpráva nebo výsledky krve).
  Relace: Každý záznam je pevně vázán k jednomu konkrétnímu mazlíčkovi (N:1).
 
-Popis datových vazeb (Kardinalita)
-Uživatel (1) ↔ Mazlíček (N): Každý mazlíček má v systému právě jednoho vlastníka, který má výhradní přístup k jeho datům. Pokud uživatel svůj účet smaže, dojde díky kaskádovému nastavení i k odstranění profilů jeho zvířat.
-Mazlíček (1) ↔ Lékařský záznam (N): Jeden mazlíček může mít v průběhu života neomezené množství záznamů, které tvoří jeho ucelenou zdravotní historii.
+Popis datových vazeb
+Uživatel (1) - Mazlíček (N): Každý mazlíček má v systému právě jednoho vlastníka, který má výhradní přístup k jeho datům. Pokud uživatel svůj účet smaže, dojde díky kaskádovému nastavení i k odstranění profilů jeho zvířat.
+Mazlíček (1) - Lékařský záznam (N): Jeden mazlíček může mít v průběhu života neomezené množství záznamů, které tvoří jeho ucelenou zdravotní historii.
 Využití pro AI Asistenta: Architektura umožňuje při dotazu na AI asistenta (AI Pet Consultant) načíst historii z tabulky Medical_Record a biometrické údaje z tabulky Pet, což poskytne jazykovému modelu (OpenAI) přesný kontext pro generování doporučení.
