@@ -12,5 +12,4 @@ public class AppUserResponseDto {
     private boolean active;
     private String firstName;
     private String lastName;
-    private Set<String> hashtags;
 }

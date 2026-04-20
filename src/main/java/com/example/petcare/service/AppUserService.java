@@ -46,8 +46,6 @@ public class AppUserService {
                 .active(user.isActive())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .hashtags(user.getHashtags() != null ?
-                        user.getHashtags().stream().map(h -> h.getName()).collect(Collectors.toSet()) : null)
                 .build();
     }
 }

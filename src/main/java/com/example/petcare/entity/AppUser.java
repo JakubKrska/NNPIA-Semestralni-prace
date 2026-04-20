@@ -37,13 +37,4 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-
-    @ManyToMany
-    @JoinTable(
-            name = "app_user_hashtag",
-            joinColumns = @JoinColumn(name = "app_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
-    )
-    @EqualsAndHashCode.Exclude
-    private Set<Hashtag> hashtags;
 }
