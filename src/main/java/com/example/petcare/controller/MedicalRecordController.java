@@ -1,56 +1,44 @@
 package com.example.petcare.controller;
 
+import com.example.petcare.dto.MedicalRecordRequestDto;
 import com.example.petcare.entity.MedicalRecord;
-import com.example.petcare.repository.MedicalRecordRepository;
+import com.example.petcare.service.MedicalRecordService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/records")
-@RequiredArgsConstructor // Generuje konstruktor pro final pole
+@RequiredArgsConstructor
 public class MedicalRecordController {
 
-    private final MedicalRecordRepository recordRepository;
+    private final MedicalRecordService recordService;
 
-    @GetMapping
-    public List<MedicalRecord> getAllRecords() {
-        return recordRepository.findAll();
+    @GetMapping("/pet/{petId}")
+    public ResponseEntity<List<MedicalRecord>> getRecordsForPet(@PathVariable Long petId, Authentication auth) {
+        return ResponseEntity.ok(recordService.getRecordsByPetId(petId, auth.getName()));
     }
 
     @PostMapping
-    public MedicalRecord createRecord(@RequestBody MedicalRecord record) {
-        return recordRepository.save(record);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MedicalRecord> getRecordById(@PathVariable Long id) {
-        return recordRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<MedicalRecord> createRecord(@Valid @RequestBody MedicalRecordRequestDto dto, Authentication auth) {
+        return ResponseEntity.status(201).body(recordService.createRecord(dto, auth.getName()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MedicalRecord> updateRecord(@PathVariable Long id, @RequestBody MedicalRecord recordDetails) {
-        return recordRepository.findById(id)
-                .map(record -> {
-                    record.setRecordDate(recordDetails.getRecordDate());
-                    record.setType(recordDetails.getType());
-                    record.setDescription(recordDetails.getDescription());
-                    record.setAttachmentUrl(recordDetails.getAttachmentUrl());
-                    return ResponseEntity.ok(recordRepository.save(record));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<MedicalRecord> updateRecord(
+            @PathVariable Long id,
+            @Valid @RequestBody MedicalRecordRequestDto dto,
+            Authentication auth) {
+        return ResponseEntity.ok(recordService.updateRecord(id, dto, auth.getName()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecord(@PathVariable Long id) {
-        if (recordRepository.existsById(id)) {
-            recordRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteRecord(@PathVariable Long id, Authentication auth) {
+        recordService.deleteRecord(id, auth.getName());
+        return ResponseEntity.noContent().build();
     }
 }
