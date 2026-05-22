@@ -1,47 +1,45 @@
 package com.example.petcare.controller;
 
+import com.example.petcare.dto.PetRequestDto;
 import com.example.petcare.entity.Pet;
-import com.example.petcare.repository.PetRepository;
+import com.example.petcare.service.PetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pets")
+@RequestMapping("/api/v1/pets")
 @RequiredArgsConstructor
 public class PetController {
 
-    private final PetRepository petRepository;
+    private final PetService petService;
 
     @GetMapping
-    public List<Pet> getAllPets() {
-        return petRepository.findAll();
+    public ResponseEntity<List<Pet>> getAllUserPets(Authentication auth) {
+
+        return ResponseEntity.ok(petService.getPetsForUser(auth.getName()));
     }
 
     @PostMapping
-    public Pet createPet(@RequestBody Pet pet) {
-        return petRepository.save(pet);
+    public ResponseEntity<Pet> createPet(@RequestBody PetRequestDto dto, Authentication auth) {
+        return ResponseEntity.status(201).body(petService.createPet(dto, auth.getName()));
     }
 
     @GetMapping("/{id}")
-    public Pet getPet(@PathVariable Long id) {
-        return petRepository.findById(id).orElse(null);
+    public ResponseEntity<Pet> getPet(@PathVariable Long id, Authentication auth) {
+        return ResponseEntity.ok(petService.getPetByIdAndUser(id, auth.getName()));
     }
 
     @PutMapping("/{id}")
-    public Pet updatePet(@PathVariable Long id, @RequestBody Pet petDetails) {
-        Pet pet = petRepository.findById(id).orElse(null);
-        if (pet != null) {
-            pet.setName(petDetails.getName());
-            pet.setSpecies(petDetails.getSpecies());
-            pet.setWeight(petDetails.getWeight());
-            return petRepository.save(pet);
-        }
-        return null;
+    public ResponseEntity<Pet> updatePet(@PathVariable Long id, @RequestBody PetRequestDto dto, Authentication auth) {
+        return ResponseEntity.ok(petService.updatePet(id, dto, auth.getName()));
     }
 
     @DeleteMapping("/{id}")
-    public void deletePet(@PathVariable Long id) {
-        petRepository.deleteById(id);
+    public ResponseEntity<Void> deletePet(@PathVariable Long id, Authentication auth) {
+        petService.deletePet(id, auth.getName());
+        return ResponseEntity.noContent().build();
     }
 }

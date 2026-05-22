@@ -2,6 +2,8 @@ package com.example.petcare.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
@@ -9,10 +11,20 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    private final String jwtSecret = "mojeVelmiTajneHesloKtereJeDostatecneDlouhe123456789";
-    private final int jwtExpirationMs = 86400000; // 24 hodin
+    // Hodnoty se dynamicky načtou z application.properties
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
-    private final Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    @Value("${jwt.expiration.ms}")
+    private int jwtExpirationMs;
+
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        // Inicializace klíče proběhne až po úspěšném injectionu hodnoty jwtSecret
+        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
 
     public String generateToken(String email) {
         return Jwts.builder()

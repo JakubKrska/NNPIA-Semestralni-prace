@@ -1,7 +1,7 @@
-HELP.md
+../HELP.md
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
+!pet-care-backend/gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -18,7 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+pet-care-backend/.idea
 *.iws
 *.iml
 *.ipr
@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+# React Frontend ignorované soubory
+pet-care-frontend/node_modules/
+pet-care-frontend/dist/
+pet-care-frontend/.vite/

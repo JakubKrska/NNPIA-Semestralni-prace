@@ -1,5 +1,6 @@
 package com.example.petcare.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonIgnore
     private AppUser owner;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)

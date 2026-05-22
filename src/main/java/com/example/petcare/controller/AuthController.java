@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -25,8 +25,14 @@ public class AuthController {
     private final AppUserService appUserService;
 
     @PostMapping("/register")
-    public ResponseEntity<AppUserResponseDto> register(@RequestBody AppUserRequestDto dto) {
-        return ResponseEntity.status(201).body(appUserService.registerUser(dto));
+    public ResponseEntity<?> register(@RequestBody AppUserRequestDto dto) {
+        try {
+            AppUserResponseDto response = appUserService.registerUser(dto);
+            return ResponseEntity.status(201).body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
     }
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> loginData) {

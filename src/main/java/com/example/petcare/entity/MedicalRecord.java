@@ -1,5 +1,6 @@
 package com.example.petcare.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,6 @@ public class MedicalRecord {
 
     @ManyToOne
     @JoinColumn(name = "pet_id")
+    @JsonIgnore
     private Pet pet;
 }
