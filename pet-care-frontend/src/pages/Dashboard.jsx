@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Modal from '../components/Modal';
+import { useAuth } from '../context/AuthContext'; // Importujeme Auth
 
-const Dashboard = ({ onSelectPet }) => {
+const Dashboard = ({ onSelectPet, onViewChange }) => { // Přidán onViewChange prop pro navigaci
+    const { user } = useAuth();
     const [pets, setPets] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [error, setError] = useState('');
+
+    const isAdmin = user?.roles?.includes('ROLE_ADMIN');
 
     const [formData, setFormData] = useState({
         name: '', species: '', breed: '', birthDate: '', weight: ''
@@ -42,6 +46,23 @@ const Dashboard = ({ onSelectPet }) => {
 
     return (
         <div className="max-w-7xl mx-auto p-4 sm:p-6">
+
+            {/* ADMIN BANNER - Zobrazí se pouze adminovi */}
+            {isAdmin && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm animate-fadeIn">
+                    <div>
+                        <h4 className="text-amber-900 font-bold text-sm flex items-center gap-1.5">🔑 Administrátorský režim</h4>
+                        <p className="text-amber-700 text-xs mt-0.5">Máte přístup ke globálním systémovým statistikám a přehledům.</p>
+                    </div>
+                    <button
+                        onClick={() => onViewChange('admin-stats')}
+                        className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 px-4 rounded-xl transition shadow shadow-amber-600/10"
+                    >
+                        Otevřít globální přehledy &rarr;
+                    </button>
+                </div>
+            )}
+
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Moji mazlíčci</h1>
@@ -93,6 +114,7 @@ const Dashboard = ({ onSelectPet }) => {
             )}
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Nový domácí mazlíček">
+                {/* ... (Formulář zůstává beze změny) ... */}
                 <form onSubmit={handleCreatePet} className="space-y-4">
                     <div>
                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Jméno zvířete</label>

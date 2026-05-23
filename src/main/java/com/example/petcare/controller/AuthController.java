@@ -6,9 +6,10 @@ import com.example.petcare.dto.AppUserResponseDto;
 import com.example.petcare.entity.AppUser;
 import com.example.petcare.repository.AppUserRepository;
 import com.example.petcare.service.AppUserService;
+import com.example.petcare.service.CustomUserDetailsService; // Přidán import
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails; // Přidán import
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final AppUserService appUserService;
+    private final CustomUserDetailsService userDetailsService; // Přidána závislost na service pro UserDetails
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AppUserRequestDto dto) {
@@ -34,13 +36,17 @@ public class AuthController {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
+
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody Map<String, String> loginData) {
         AppUser user = userRepository.findByEmail(loginData.get("email"))
                 .orElseThrow(() -> new RuntimeException("Uživatel nenalezen"));
 
         if (passwordEncoder.matches(loginData.get("password"), user.getPassword())) {
-            String token = jwtUtils.generateToken(user.getEmail());
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
+            String token = jwtUtils.generateToken(userDetails);
             return Map.of("token", token);
         } else {
             throw new RuntimeException("Špatné heslo");
